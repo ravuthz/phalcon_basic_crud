@@ -1,8 +1,8 @@
 <?php
+use Phalcon\Validation;
+use Phalcon\Validation\Validator\Uniqueness as UniquenessValidator;
 
-class Notes extends \Phalcon\Mvc\Model
-{
-
+class Notes extends \Phalcon\Mvc\Model {
     /**
      *
      * @var integer
@@ -36,9 +36,27 @@ class Notes extends \Phalcon\Mvc\Model
     /**
      * Initialize method for model.
      */
-    public function initialize()
-    {
+    public function initialize() {
         $this->setSchema("phalcon_basic_crud");
+    }
+
+    /**
+     * Validations and business logic
+     *
+     * @return boolean
+     */
+    public function validation() {
+        $validator = new Validation();
+
+        $validator->add(
+            'name',
+            new UniquenessValidator([
+                'model'   => $this,
+                'message' => 'Sorry, That name is already taken'
+            ])
+        );
+
+        return $this->validate($validator);
     }
 
     /**
@@ -46,8 +64,7 @@ class Notes extends \Phalcon\Mvc\Model
      *
      * @return string
      */
-    public function getSource()
-    {
+    public function getSource() {
         return 'notes';
     }
 
@@ -57,8 +74,7 @@ class Notes extends \Phalcon\Mvc\Model
      * @param mixed $parameters
      * @return Notes[]|Notes
      */
-    public static function find($parameters = null)
-    {
+    public static function find($parameters = null) {
         return parent::find($parameters);
     }
 
@@ -68,8 +84,7 @@ class Notes extends \Phalcon\Mvc\Model
      * @param mixed $parameters
      * @return Notes
      */
-    public static function findFirst($parameters = null)
-    {
+    public static function findFirst($parameters = null) {
         return parent::findFirst($parameters);
     }
 
